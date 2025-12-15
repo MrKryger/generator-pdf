@@ -1,0 +1,95 @@
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1beta1
+metadata:
+  name: pdf-generator-paxum
+spec:
+  gateways:
+    - mesh
+    - istio-system/prod-paxum-gateway
+  hosts:
+    - pdf.paxum.com
+  http:
+  - name: "pdf-generator"
+    route:
+      - destination:
+          host: pdf-generator
+          port:
+            number: 80
+
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1beta1
+metadata:
+  name: pdf-generator-paxumbank
+spec:
+  gateways:
+    - mesh
+    - istio-system/prod-paxumbank-gateway
+  hosts:
+    - pdf.paxumbank.com
+  http:
+  - name: "pdf-generator"
+    route:
+      - destination:
+          host: pdf-generator
+          port:
+            number: 80
+
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1beta1
+metadata:
+  name: pdf-generator-paydek
+spec:
+  gateways:
+    - mesh
+    - istio-system/prod-paydek-gateway
+  hosts:
+    - pdf.paydek.com
+  http:
+  - name: "pdf-generator"
+    route:
+      - destination:
+          host: pdf-generator
+          port:
+            number: 80
+
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1beta1
+metadata:
+  name: pdf-generator-aplus
+spec:
+  gateways:
+    - mesh
+    - istio-system/prod-aplus-gateway
+  hosts:
+    - pdf.aplus-payments.com
+  http:
+  - name: "pdf-generator"
+    route:
+      - destination:
+          host: pdf-generator
+          port:
+            number: 80
+
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1beta1
+metadata:
+  name: pdf-generator-fundstr
+spec:
+  gateways:
+    - mesh
+    - istio-system/prod-fundstr-gateway
+  hosts:
+    - pdf.fundstr.com
+  http:
+  - name: "pdf-generator"
+    route:
+      - destination:
+          host: pdf-generator
+          port:
+            number: 80
+

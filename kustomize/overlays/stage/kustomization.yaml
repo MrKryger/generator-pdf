@@ -1,0 +1,12 @@
+resources:
+  - ../../base
+labels:
+  - pairs:
+      app.kubernetes.io/instance: stage
+    includeSelectors: true
+    includeTemplates: true
+images:
+  - name: generator-pdf
+    newName: 656026053728.dkr.ecr.eu-central-1.amazonaws.com/generator-pdf # {"$imagepolicy": "flux-system:generator-pdf:name"}
+    newTag: dev-1736948372-2afc987d # {"$imagepolicy": "flux-system:generator-pdf:tag"}
+namespace: stage-generator-pdf

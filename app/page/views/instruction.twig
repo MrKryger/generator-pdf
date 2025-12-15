@@ -1,0 +1,19 @@
+{% extends "index.twig" %}
+
+{% block content %}
+    <div class="app">
+        <div>
+            <div class="start">
+                <img src="{{ imagePath }}" class="icon" alt="logo" />
+            </div>
+            <div class="h1">{{ currencyCode }} {{ label }} Payment Instructions</div>
+            {% if bankName %}
+            <div class="info-line">
+                <div class="text">Bank Name</div>
+                <div class="text-value">{{ bankName }}</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

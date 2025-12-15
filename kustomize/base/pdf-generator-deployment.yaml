@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdf-generator
+  labels:
+    app.kubernetes.io/name: pdf-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pdf-generator
+  template:
+    metadata:
+      name: pdf-generator
+      labels:
+        app.kubernetes.io/name: pdf-generator
+    spec:
+      containers:
+        - name: pdf-generator
+          image: generator-pdf
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: http
+      restartPolicy: Always
