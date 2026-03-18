@@ -1,9 +1,36 @@
 const twig = require('twig')
 const path = require('path')
 const { Readable } = require('stream')
+const sanitizeHtml = require('sanitize-html')
 const { getProjectInfo } = require('../helper')
 const { generatePDF, imageToBase64 } = require('../app')
 
+// Allowed template names to prevent path traversal
+const ALLOWED_TEMPLATES = ['instruction', 'account_confirmation', 'application', 'newapplication']
+
+// Sanitize all string values in user data to prevent HTML injection / SSRF
+const SANITIZE_OPTIONS = {
+  allowedTags: ['b', 'i', 'em', 'strong', 'div', 'span', 'br', 'p'],
+  allowedAttributes: {},
+  allowedSchemes: [],
+}
+
+function sanitizeUserData(obj) {
+  if (typeof obj === 'string') {
+    return sanitizeHtml(obj, SANITIZE_OPTIONS)
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(sanitizeUserData)
+  }
+  if (obj && typeof obj === 'object') {
+    const result = {}
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = sanitizeUserData(value)
+    }
+    return result
+  }
+  return obj
+}
 
 let objTemp = {}
 let clearVariableTimeout;
@@ -17,8 +44,11 @@ function accessVariable() {
 }
 
 const createFormData = async (req, name, file) => {
+  if (!ALLOWED_TEMPLATES.includes(name)) {
+    throw new Error(`Unknown template: ${name}`)
+  }
   const info = getProjectInfo(req.body.project)
-  const data = req.body.data // Expecting JSON with title and body
+  const data = sanitizeUserData(req.body.data)
   data.imagePath = await imageToBase64(info.link)
   data.footer = info
   data.project = info.name

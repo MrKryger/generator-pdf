@@ -1,3 +1,0 @@
-resources:
-  - pdf-generator-deployment.yaml
-  - pdf-generator-service.yaml

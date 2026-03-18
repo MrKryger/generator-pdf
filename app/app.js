@@ -18,8 +18,6 @@ const imageToBase64 = (filePath) => {
 async function generatePDF(content) {
   const browser = await puppeteer.launch({
     headless: true,
-    // defaultViewport: null,
-    // executablePath: '/usr/bin/chromium-browser',
     args: [
       '--disable-gpu',
       '--disable-dev-shm-usage',
@@ -28,6 +26,19 @@ async function generatePDF(content) {
     ]
   });
   const page = await browser.newPage();
+
+  // SSRF protection: block all external network requests.
+  // Only allow data: URIs (used for base64-encoded images) and about:blank.
+  await page.setRequestInterception(true);
+  page.on('request', (request) => {
+    const url = request.url();
+    if (url.startsWith('data:') || url === 'about:blank') {
+      request.continue();
+    } else {
+      request.abort('blockedbyclient');
+    }
+  });
+
   await page.setContent(content, { waitUntil: 'networkidle0' });
   const pdfBuffer = await page.pdf({
     format: 'A4',
